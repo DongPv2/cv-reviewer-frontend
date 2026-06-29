@@ -64,16 +64,24 @@ export async function getSession(sessionId: string): Promise<SessionStatus> {
 
 /**
  * Xuất báo cáo phân tích ra file PDF.
- * GET /api/sessions/{sessionId}/export — trả về Blob
+ * GET /api/sessions/{sessionId}/export — trả về { blob, filename }
  */
-export async function exportPDF(sessionId: string): Promise<Blob> {
+export async function exportPDF(sessionId: string): Promise<{ blob: Blob; filename: string }> {
   const response = await apiClient.get<Blob>(
     `/api/sessions/${sessionId}/export`,
-    {
-      responseType: "blob",
-    }
+    { responseType: "blob" }
   );
-  return response.data;
+
+  // Lấy tên file từ Content-Disposition header
+  const disposition = response.headers["content-disposition"] ?? "";
+  let filename = "overview-cv.pdf";
+  const match = disposition.match(/filename\*=UTF-8''([^;]+)/i)
+    || disposition.match(/filename="([^"]+)"/i);
+  if (match) {
+    filename = decodeURIComponent(match[1]);
+  }
+
+  return { blob: response.data, filename };
 }
 
 /**
