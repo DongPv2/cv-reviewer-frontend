@@ -72,7 +72,7 @@ function useAnalysis(sessionId: string | null): {
      */
     async function poll(attempt: number = 0): Promise<void> {
       try {
-        const session = await getSession(sessionId);
+        const session = await getSession(sessionId!);
 
         if (!activeRef.current) return;
 
