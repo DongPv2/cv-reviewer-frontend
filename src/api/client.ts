@@ -6,7 +6,7 @@ import type { SessionStatus } from "../types";
  * baseURL trỏ tới FastAPI backend chạy ở port 8000.
  */
 const apiClient = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000",
   timeout: 60_000, // 60 giây — phù hợp với thời gian AI analysis
 });
 
